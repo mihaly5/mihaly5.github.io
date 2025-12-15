@@ -1,0 +1,182 @@
+/* style.css - Professional Financial Theme */
+
+/* General Body Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0f172a; /* Dark Slate Background */
+    color: #e2e8f0;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Navigation Bar */
+nav {
+    background-color: #1e293b;
+    padding: 1rem;
+    border-bottom: 3px solid #3b82f6; /* Blue accent */
+}
+nav ul {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    margin: 0;
+}
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+nav a {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+nav a:hover {
+    color: #3b82f6;
+}
+
+/* Main Container */
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #1e293b;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+/* Typography */
+h1, h2 {
+    color: #60a5fa;
+    text-align: center;
+}
+
+/* Utility Classes */
+.category-box {
+    border: 1px solid #334155;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+.btn {
+    display: inline-block;
+    background-color: #3b82f6;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+.btn:hover { background-color: #2563eb; }
+
+/* Input Forms */
+input {
+    width: 95%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #334155;
+    border: 1px solid #475569;
+    color: white;
+    border-radius: 5px;
+}
+button.calc-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #10b981; /* Emerald Green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+}
+button.calc-btn:hover { background-color: #059669; }
+
+/* Results Section */
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #334155;
+    border-left: 5px solid #10b981;
+    font-size: 1.2rem;
+}
+
+/* Explanatory Sections */
+.explanation-box {
+    margin-top: 40px;
+    background-color: #1e293b;
+    border-top: 2px solid #3b82f6;
+    padding: 20px;
+    color: #cbd5e1;
+}
+.explanation-box h3 { color: #fff; margin-top: 0; }
+.explanation-box h4 { color: #94a3b8; margin-top: 20px; margin-bottom: 10px; }
+.explanation-box ul { padding-left: 20px; }
+.explanation-box li { margin-bottom: 8px; }
+
+/* Mathematical Formulas */
+.formula {
+    background-color:#334155; 
+    padding:15px; 
+    border-radius:5px; 
+    font-family:monospace; 
+    text-align:center;
+    font-size: 0.9em;
+    overflow-x: auto;
+}
+
+/* Checkbox Styling */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    background-color: #334155;
+    padding: 10px;
+    border-radius: 5px;
+}
+.checkbox-container input {
+    width: 20px;
+    margin: 0 10px 0 0;
+    cursor: pointer;
+}
+
+/* Summary Grid (Used in Compound Interest) */
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+}
+.summary-item {
+    background-color: #334155;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+}
+.summary-value {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+}
+.highlight { color: #10b981; } 
+.highlight-blue { color: #3b82f6; }
+
+/* Chart Container */
+.chart-container {
+    margin-top: 30px;
+    background-color: #1e293b;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    border-top: 1px solid #334155;
+    color: #64748b;
+    font-size: 0.9rem;
+}

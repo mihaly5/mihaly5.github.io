@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hitelkalkulátor - Számold ki a Törlesztődet</title>
+    <meta name="description" content="Ingyenes online hitelkalkulátor. Számold ki a havi törlesztőrészletet a felvett összeg, a kamat és a futamidő alapján. Annuitásos hitel számítás.">
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Főoldal</a></li>
+            <li><a href="kamatos.html">Befektetés</a></li>
+            <li><a href="hitel.html" style="color:#3b82f6;">Hitelkalkulátor</a></li>
+            <li><a href="black_scholes.html">Pro: Black-Scholes</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>Hitel Törlesztő Kalkulátor</h1>
+        <p style="text-align:center; color:#94a3b8;">Mennyit kell fizetned havonta? Számold ki pontosan.</p>
+        
+        <label>Hitelösszeg (Ft):</label>
+        <input type="number" id="loan-amount" placeholder="Pl. 10000000" min="0">
+
+        <label>Éves nominális kamatláb (%):</label>
+        <input type="number" id="interest-rate" placeholder="Pl. 8.5" min="0">
+
+        <label>Futamidő (Év):</label>
+        <input type="number" id="loan-years" placeholder="Pl. 20" min="1">
+
+        <button class="calc-btn" onclick="calculateLoan()">Törlesztő Kiszámolása</button>
+
+        <div class="result" id="loan-result" style="display:none;"></div>
+
+        <div class="explanation-box">
+            <h3>Hogyan működik a számolás?</h3>
+            <p>Ez a kalkulátor az úgynevezett <strong>annuitásos módszert</strong> használja (egyenletes törlesztés). Ez a banki standard a lakás- és személyi hiteleknél.</p>
+            
+            <h4>Eredmény magyarázat:</h4>
+            <ul>
+                <li><strong>Havi Törlesztő:</strong> Ez az az összeg, amit minden hónapban fixen fizetned kell a futamidő végéig.</li>
+                <li><strong>Teljes Visszafizetés:</strong> A felvett tőke + az évek alatt kifizetett összes kamat.</li>
+            </ul>
+
+            <h4>A használt képletek:</h4>
+            
+            <p><strong>1. Normál eset (ha van kamat):</strong></p>
+            <p style="font-size: 1.1em; overflow-x: auto;">
+                \[
+                PMT = P \cdot \frac{r(1+r)^n}{(1+r)^n - 1}
+                \]
+            </p>
+
+            <p><strong>2. Speciális eset (ha 0% a kamat):</strong></p>
+            <p>Ha kamatmentes hitelt veszel fel (pl. családi kölcsön, támogatott hitelek), a képlet egyszerűsödik:</p>
+            <p style="font-size: 1.1em; overflow-x: auto;">
+                \[
+                PMT = \frac{P}{n}
+                \]
+            </p>
+            
+            <h4>Jelmagyarázat:</h4>
+            <ul>
+                <li>\(PMT\): Havi törlesztőrészlet.</li>
+                <li>\(P\): Felvett hitelösszeg (Principal).</li>
+                <li>\(r\): Havi kamatláb (Éves nominális kamat / 12).</li>
+                <li>\(n\): A futamidő hónapokban (Évek * 12).</li>
+            </ul>
+            
+            <p><small><i>Figyelem: Ez a számítás tájékoztató jellegű, és nem tartalmazza az esetleges egyéb banki költségeket (számlavezetés, biztosítás), azaz nem a THM-et mutatja, hanem az ügyleti kamatot.</i></small></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Minden jog fenntartva. | <a href="index.html" style="color:#64748b; text-decoration:none;">Főoldal</a></p>
+        <p style="font-size:0.8em;">Az oldalon található számítások tájékoztató jellegűek.</p>
+    </footer>
+
+    <script>
+        function calculateLoan() {
+            // 1. INPUT RETRIEVAL
+            let amount = parseFloat(document.getElementById('loan-amount').value);
+            let rate = parseFloat(document.getElementById('interest-rate').value); 
+            let years = parseFloat(document.getElementById('loan-years').value);
+
+            // 2. VALIDATION
+            // Check if inputs are numbers and non-negative
+            if (isNaN(amount) || amount < 0) { amount = 0; }
+            if (isNaN(rate) || rate < 0) { rate = 0; }
+
+            // Strict validation for Years: Must be a number AND greater than 0
+            if (isNaN(years) || years <= 0) {
+                alert("A futamidőnek nagyobbnak kell lennie, mint 0 év!");
+                return;
+            }
+
+            // 3. CALCULATION
+            let n = years * 12; // Total number of months
+            let monthlyPayment = 0;
+            let totalPayment = 0;
+            let totalInterest = 0;
+
+            // Updated Logic: Use <= to handle 0 and potential floating point edges safely
+            if (rate <= 0) {
+                // SPECIAL CASE: 0% INTEREST
+                monthlyPayment = amount / n;
+                totalPayment = amount;
+                totalInterest = 0;
+            } else {
+                // STANDARD CASE: ANNUITY FORMULA
+                let r = (rate / 100) / 12; // Monthly interest rate
+                monthlyPayment = amount * ( (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1) );
+                totalPayment = monthlyPayment * n;
+                totalInterest = totalPayment - amount;
+            }
+
+            // 4. DISPLAY RESULTS
+            let formatter = new Intl.NumberFormat('hu-HU', { style: 'currency', currency: 'HUF', maximumFractionDigits: 0 });
+
+            document.getElementById('loan-result').style.display = 'block';
+            document.getElementById('loan-result').innerHTML = 
+                `<strong>Havi Törlesztőrészlet:</strong> <span style="font-size:1.5em; color:#fff">${formatter.format(monthlyPayment)}</span><br>` +
+                `<div style="font-size:0.9em; margin-top:10px; color:#cbd5e1;">` +
+                `Teljes visszafizetés: ${formatter.format(totalPayment)}<br>` +
+                `Ebből kamat: ${formatter.format(totalInterest)}` +
+                `</div>`;
+                
+            // Trigger MathJax re-render
+            if (window.MathJax) { MathJax.typeset(); }
+        }
+    </script>
+</body>
+</html>

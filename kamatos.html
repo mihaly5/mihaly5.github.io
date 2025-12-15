@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamatos Kamat Kalkulátor</title> 
+    <meta name="description" content="Részletes kamatos kamat kalkulátor grafikonnal, befizetési időpont választással.">
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Főoldal</a></li>
+            <li><a href="kamatos.html" style="color:#3b82f6;">Befektetés</a></li>
+            <li><a href="hitel.html">Hitelkalkulátor</a></li>
+            <li><a href="black_scholes.html">Pro: Black-Scholes</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>Kamatos Kamat Kalkulátor</h1>
+        
+        <label>Kezdőtőke (Ft):</label>
+        <input type="number" id="principal" placeholder="Pl. 1000000" min="0">
+
+        <label>Havi megtakarítás (Ft):</label>
+        <input type="number" id="monthly" placeholder="Pl. 50000" min="0">
+
+        <label>Éves nominális kamatláb (%):</label>
+        <div style="font-size: 0.85em; color: #94a3b8; margin-top: -8px; margin-bottom: 8px;">(havi tőkésítéssel számolva)</div>
+        <input type="number" id="rate" placeholder="Pl. 7" min="0">
+
+        <label>Időtáv (Év):</label>
+        <input type="number" id="years" placeholder="Pl. 10" min="1">
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="beginning">
+            <label for="beginning" style="margin:0; cursor:pointer;">A befizetés a hónap <strong>elején</strong> történik</label>
+        </div>
+
+        <button class="calc-btn" onclick="calculateInterest()">Számolás és Grafikon</button>
+
+        <div class="result" id="result" style="display:none;">
+            <div style="text-align:center; margin-bottom:15px;">
+                Várható végösszeg:<br>
+                <span id="final-amount" style="font-size:2em; color:#10b981;"></span>
+                
+                <p style="font-size: 0.7em; color: #cbd5e1; margin-top: 5px;">
+                    *A számítás nominális értéken történik, inflációval nem korrigálva.
+                </p>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <small>Saját befizetésed</small><br>
+                    <span id="total-invested" class="summary-value highlight-blue"></span>
+                </div>
+                <div class="summary-item">
+                    <small>Kamatnyereség</small><br>
+                    <span id="total-interest" class="summary-value highlight"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container" id="chart-wrapper" style="display:none;">
+            <canvas id="growthChart"></canvas>
+        </div>
+
+        <div class="explanation-box">
+            <h3>Matematikai háttér</h3>
+            <p>A grafikon és a számítás figyelembe veszi a befizetés időpontját és a kamatos kamat hatását.</p>
+            
+            <h4>A használt képlet:</h4>
+            <p style="font-size: 1.1em; overflow-x: auto;">
+                \[
+                FV = P\left(1+\frac{r}{n}\right)^{nt} + M \frac{\left(1+\frac{r}{n}\right)^{nt}-1}{\frac{r}{n}} \times \left(1+T_{type} \cdot \frac{r}{n}\right)
+                \]
+            </p>
+
+            <h4>Jelmagyarázat:</h4>
+            <ul>
+                <li>\(FV\): Jövőbeli érték (Végösszeg).</li>
+                <li>\(P\): Kezdőtőke (Principal).</li>
+                <li>\(M\): Havi megtakarítás.</li>
+                <li>\(r\): Éves nominális kamatláb tizedesjegyként (pl. 0.07).</li>
+                <li>\(n\): Tőkésítés gyakorisága (havi = 12).</li>
+                <li>\(t\): Évek száma.</li>
+                <li>\(T_{type}\): Befizetés típusa. Értéke <strong>1</strong>, ha hónap elején fizetsz, és <strong>0</strong>, ha hónap végén.</li>
+            </ul>
+
+            <p style="font-size:0.9em; margin-top:10px;"><i>Megjegyzés: Ha 0% a kamat, a rendszer automatikusan egyszerű összeadással számol (Kezdőtőke + Összes havi befizetés).</i></p>
+
+            <hr style="border-color: #334155; margin: 20px 0;">
+
+            <h3>Miért kerül sokba a várakozás?</h3>
+            <p>Sokan azt hiszik, ha 10 évvel később kezdik, csak "kicsit" lesz kevesebb pénzük. Ez tévedés.</p>
+            
+            <p><strong>A példa:</strong> Ha 20 évesen elkezdesz befektetni havi 20.000 Ft-ot (feltételezve havi befizetést és 8% nominális éves hozamot), 60 éves korodra kb. <strong>70 millió forintod</strong> lesz.</p>
+            
+            <p>Ha 10 évet vársz, és 30 évesen kezded el ugyanezt, 60 éves korodra csak <strong>30 millió forintod</strong> lesz.</p>
+            <p>A 10 év késés nem 25%-kal csökkentette a pénzedet, hanem <strong>több mint a felével!</strong> Ennek oka, hogy a kamatos kamat az utolsó években "robban" igazán, és a késlekedéssel pont ezeket a legjövedelmezőbb éveket veszíted el.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Minden jog fenntartva. | <a href="index.html" style="color:#64748b; text-decoration:none;">Főoldal</a></p>
+        <p style="font-size:0.8em;">Az oldalon található számítások tájékoztató jellegűek.</p>
+    </footer>
+
+    <script>
+        let myChart = null; // Global variable for the Chart instance
+
+        function calculateInterest() {
+            // 1. INPUT RETRIEVAL
+            let P = parseFloat(document.getElementById('principal').value);
+            let M = parseFloat(document.getElementById('monthly').value);
+            let R_percent = parseFloat(document.getElementById('rate').value);
+            let T = parseFloat(document.getElementById('years').value);
+            let isBeginning = document.getElementById('beginning').checked;
+
+            // 2. INPUT VALIDATION
+            if (isNaN(P) || P < 0) { P = 0; } 
+            if (isNaN(M) || M < 0) { M = 0; }
+            if (isNaN(R_percent) || R_percent < 0) { R_percent = 0; }
+
+            if (isNaN(T) || T <= 0) {
+                alert("Az évek száma legyen pozitív!");
+                return;
+            }
+
+            // 3. CALCULATION LOGIC
+            let R = R_percent / 100;
+            let months = T * 12;
+            let monthlyRate = R / 12;
+            let futureValue = 0;
+            let invested = P + (M * months);
+
+            // Arrays for Chart.js
+            let labels = []; 
+            let dataTotal = []; 
+            let dataInvested = []; 
+
+            // Iterative calculation for each year
+            for (let i = 0; i <= T; i++) {
+                let currentMonths = i * 12;
+                let currentFV = 0;
+                let currentInvested = P + (M * currentMonths);
+
+                if (R === 0) {
+                    currentFV = P + (M * currentMonths);
+                } else {
+                    let compoundInterestFactor = Math.pow(1 + monthlyRate, currentMonths);
+                    let principalGrow = P * compoundInterestFactor;
+                    let annuity = (M * (compoundInterestFactor - 1)) / monthlyRate;
+                    
+                    if (isBeginning) {
+                        annuity = annuity * (1 + monthlyRate);
+                    }
+                    
+                    currentFV = principalGrow + annuity;
+                }
+
+                // Year 0 is labeled "Kezdés"
+                if (i === 0) {
+                    labels.push("Kezdés");
+                } else {
+                    labels.push(i + ". év");
+                }
+
+                dataTotal.push(currentFV);
+                dataInvested.push(currentInvested);
+                
+                if (i === T) futureValue = currentFV;
+            }
+
+            // 4. DISPLAY RESULTS
+            let interestEarned = futureValue - invested;
+            let formatter = new Intl.NumberFormat('hu-HU', { style: 'currency', currency: 'HUF', maximumFractionDigits: 0 });
+
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('final-amount').innerText = formatter.format(futureValue);
+            document.getElementById('total-invested').innerText = formatter.format(invested);
+            document.getElementById('total-interest').innerText = formatter.format(interestEarned);
+
+            // 5. RENDER CHART
+            document.getElementById('chart-wrapper').style.display = 'block';
+            drawChart(labels, dataTotal, dataInvested);
+            
+            if (window.MathJax) { MathJax.typeset(); }
+        }
+
+        // Helper function to render Chart.js graph
+        function drawChart(labels, dataTotal, dataInvested) {
+            const ctx = document.getElementById('growthChart').getContext('2d');
+
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Teljes Vagyon',
+                            data: dataTotal,
+                            borderColor: '#10b981', // Green
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Saját Befizetés',
+                            data: dataInvested,
+                            borderColor: '#3b82f6', // Blue
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            borderDash: [5, 5], 
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    // UPDATED TOOLTIP LOGIC
+                    plugins: {
+                        legend: { labels: { color: 'white' } },
+                        tooltip: { 
+                            mode: 'index', 
+                            intersect: false,
+                            callbacks: {
+                                // Dynamic title based on context
+                                title: function(context) {
+                                    let label = context[0].label;
+                                    if (label === "Kezdés") {
+                                        return label + " - Kezdő állapot";
+                                    } else {
+                                        return label + " - Év végi állapot";
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#cbd5e1' }, grid: { color: '#334155' } },
+                        y: { ticks: { color: '#cbd5e1' }, grid: { color: '#334155' } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

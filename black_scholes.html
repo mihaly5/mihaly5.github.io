@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black-Scholes Option Pricing Calculator</title>
+    <meta name="description" content="Calculate Call and Put option prices with Greeks (Delta, Gamma) using Black-Scholes model.">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .explanation-box {
+            margin-top: 40px;
+            background-color: #1e293b;
+            border-top: 2px solid #3b82f6;
+            padding: 20px;
+            color: #cbd5e1;
+        }
+        .explanation-box h3 { color: #fff; }
+        .greeks-list li { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="kamatos.html">Retail: Compound Interest</a></li>
+            <li><a href="hitel.html">Loan Calculator</a></li>
+            <li><a href="black_scholes.html" style="color:#3b82f6;">Pro: Black-Scholes</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>Black-Scholes Model</h1>
+        <p style="font-size:0.9em; color:#94a3b8;">European Option Pricing & The Greeks</p>
+        
+        <label>Stock Price ($):</label>
+        <input type="number" id="S" value="100">
+
+        <label>Strike Price ($):</label>
+        <input type="number" id="K" value="100">
+
+        <label>Time to Maturity (Years):</label>
+        <input type="number" id="T" value="1">
+
+        <label>Volatility (σ as %):</label>
+        <input type="number" id="v" value="20">
+
+        <label>Risk-free Rate (%):</label>
+        <input type="number" id="r" value="5">
+
+        <button class="calc-btn" onclick="calculateBS()">Calculate Option Price</button>
+
+        <div class="result" id="bs-result" style="display:none;"></div>
+
+        <div class="explanation-box">
+            <h3>Understanding the Greeks</h3>
+            <p>In quantitative finance, "The Greeks" measure the sensitivity of an option's price to various factors. This tool calculates the theoretical value based on the 1973 Black-Scholes-Merton model.</p>
+            
+            <ul class="greeks-list">
+                <li><strong>Δ Delta:</strong> Measures how much the option price changes if the stock price moves by $1. (Roughly equivalent to the probability of expiring ITM).</li>
+                <li><strong>Γ Gamma:</strong> The rate of change of Delta. Important for hedging convexity risk.</li>
+                <li><strong>Θ Theta (Time Decay):</strong> How much value the option loses per day as expiration approaches.</li>
+                <li><strong>ν Vega:</strong> Sensitivity to volatility. If volatility goes up by 1%, how much does the option price change?</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 All Rights Reserved. | <a href="index.html" style="color:#64748b; text-decoration:none;">Home</a></p>
+        <p style="font-size:0.8em;">Calculations are for educational purposes only.</p>
+    </footer>
+
+    <script>
+        // Cumulative Normal Distribution Function (Standard Approximation)
+        function cnd(x) {
+            var a1 = 0.31938153, a2 = -0.356563782, a3 = 1.781477937, a4 = -1.821255978, a5 = 1.330274429;
+            var p = 0.2316419;
+            var L = Math.abs(x);
+            var k = 1 / (1 + p * L);
+            var w = 1 - 1 / Math.sqrt(2 * Math.PI) * Math.exp(-L * L / 2) * (a1 * k + a2 * k * k + a3 * Math.pow(k, 3) + a4 * Math.pow(k, 4) + a5 * Math.pow(k, 5));
+            return (x < 0) ? 1 - w : w;
+        }
+
+        function calculateBS() {
+            // 1. Input Retrieval
+            let S = parseFloat(document.getElementById('S').value);
+            let K = parseFloat(document.getElementById('K').value);
+            let T = parseFloat(document.getElementById('T').value);
+            let v = parseFloat(document.getElementById('v').value) / 100;
+            let r = parseFloat(document.getElementById('r').value) / 100;
+
+            // 2. Black-Scholes Formula Components (d1, d2)
+            let d1 = (Math.log(S / K) + (r + (v * v) / 2) * T) / (v * Math.sqrt(T));
+            let d2 = d1 - v * Math.sqrt(T);
+
+            // 3. Option Pricing
+            let callPrice = S * cnd(d1) - K * Math.exp(-r * T) * cnd(d2);
+            let putPrice = K * Math.exp(-r * T) * cnd(-d2) - S * cnd(-d1);
+
+            // 4. Greeks Calculation (Simplified)
+            // Delta
+            let callDelta = cnd(d1);
+            let putDelta = callDelta - 1;
+            
+            // Gamma (Identical for Call and Put)
+            let pdf_d1 = (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-(d1 * d1) / 2);
+            let gamma = pdf_d1 / (S * v * Math.sqrt(T));
+
+            // Vega (Identical for Call and Put, scaled by 100 for percentage view)
+            let vega = (S * pdf_d1 * Math.sqrt(T)) / 100;
+
+            // 5. Display Results
+            document.getElementById('bs-result').style.display = 'block';
+            document.getElementById('bs-result').innerHTML = 
+                `<strong>Call Price:</strong> $${callPrice.toFixed(2)} <br>` +
+                `<strong>Put Price:</strong> $${putPrice.toFixed(2)} <br>` +
+                `<hr style="border-color:#475569; margin:15px 0;">` +
+                `<strong>Greeks:</strong><br>` +
+                `Δ Call Delta: ${callDelta.toFixed(3)} | Put Delta: ${putDelta.toFixed(3)}<br>` +
+                `Γ Gamma: ${gamma.toFixed(4)}<br>` +
+                `ν Vega: ${vega.toFixed(4)}`;
+        }
+    </script>
+</body>
+</html>
