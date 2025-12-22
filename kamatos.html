@@ -1,136 +1,227 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compound Interest Calculator</title>
-
+    <title>Kamatos Kamat Kalkulátor</title> 
+    <meta name="description" content="Részletes kamatos kamat kalkulátor grafikonnal, befizetési időpont választással.">
+    <link rel="stylesheet" href="style.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2023839620373581"
      crossorigin="anonymous"></script>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <link rel="stylesheet" href="style.css">
-    <script src="lang.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
     <nav>
         <ul>
-            <li><a href="index.html" data-lang="nav_home">Home</a></li>
-            <li><a href="kamatos.html" style="color:#3b82f6;" data-lang="nav_invest">Investment</a></li>
-            <li><a href="hitel.html" data-lang="nav_loan">Loan</a></li>
-            <li><a href="black_scholes.html" data-lang="nav_bs">Black-Scholes</a></li>
-            <li>
-                <select id="lang-selector" class="lang-select">
-                    <option value="hu">🇭🇺 HU</option>
-                    <option value="en">🇬🇧 EN</option>
-                    <option value="de">🇩🇪 DE</option>
-                    <option value="es">🇪🇸 ES</option>
-                </select>
-            </li>
+            <li><a href="index.html">Főoldal</a></li>
+            <li><a href="kamatos.html" style="color:#3b82f6;">Befektetés</a></li>
+            <li><a href="hitel.html">Hitelkalkulátor</a></li>
+            <li><a href="black_scholes.html">Pro: Black-Scholes</a></li>
         </ul>
     </nav>
 
     <div class="container">
-        <h1 data-lang="invest_title">Compound Interest Calculator</h1>
-        <p style="text-align:center; color:#94a3b8;" data-lang="invest_sub">Visualize wealth growth.</p>
+        <h1>Kamatos Kamat Kalkulátor</h1>
         
-        <label data-lang="lbl_start_capital">Starting Capital:</label>
-        <input type="number" id="start-amount" placeholder="1000000" min="0">
+        <label>Kezdőtőke (Ft):</label>
+        <input type="number" id="principal" placeholder="Pl. 1000000" min="0">
 
-        <label data-lang="lbl_monthly_add">Monthly Contribution:</label>
-        <input type="number" id="monthly-contribution" placeholder="50000" min="0">
+        <label>Havi megtakarítás (Ft):</label>
+        <input type="number" id="monthly" placeholder="Pl. 50000" min="0">
 
-        <label data-lang="lbl_interest_rate">Annual Interest Rate (%):</label>
-        <input type="number" id="interest-rate" placeholder="7" min="0">
+        <label>Éves nominális kamatláb (%):</label>
+        <div style="font-size: 0.85em; color: #94a3b8; margin-top: -8px; margin-bottom: 8px;">(havi tőkésítéssel számolva)</div>
+        <input type="number" id="rate" placeholder="Pl. 7" min="0">
 
-        <label data-lang="lbl_years">Term (Years):</label>
-        <input type="number" id="years" placeholder="10" min="1">
+        <label>Időtáv (Év):</label>
+        <input type="number" id="years" placeholder="Pl. 10" min="1">
 
-        <button class="calc-btn" onclick="calculateInterest()" data-lang="btn_calc">Calculate</button>
+        <div class="checkbox-container">
+            <input type="checkbox" id="beginning">
+            <label for="beginning" style="margin:0; cursor:pointer;">A befizetés a hónap <strong>elején</strong> történik</label>
+        </div>
 
-        <div class="result" id="result" style="display:none;"></div>
-        <div class="chart-container" style="display:none;" id="chart-wrapper">
+        <button class="calc-btn" onclick="calculateInterest()">Számolás és Grafikon</button>
+
+        <div class="result" id="result" style="display:none;">
+            <div style="text-align:center; margin-bottom:15px;">
+                Várható végösszeg:<br>
+                <span id="final-amount" style="font-size:2em; color:#10b981;"></span>
+                
+                <p style="font-size: 0.7em; color: #cbd5e1; margin-top: 5px;">
+                    *A számítás nominális értéken történik, inflációval nem korrigálva.
+                </p>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <small>Saját befizetésed</small><br>
+                    <span id="total-invested" class="summary-value highlight-blue"></span>
+                </div>
+                <div class="summary-item">
+                    <small>Kamatnyereség</small><br>
+                    <span id="total-interest" class="summary-value highlight"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container" id="chart-wrapper" style="display:none;">
             <canvas id="growthChart"></canvas>
         </div>
-    </div>
 
-    <div id="content-en" class="container seo-content lang-content">
-        <h2>Power of Compound Interest</h2>
-        <p>Compound interest is interest on interest. It makes your money grow faster over time.</p>
-    </div>
-    <div id="content-hu" class="container seo-content lang-content">
-        <h2>A Kamatos Kamat Ereje</h2>
-        <p>A kamatos kamat kamat a kamaton. Ez teszi lehetővé, hogy a pénzed idővel egyre gyorsabban növekedjen.</p>
-    </div>
-    <div id="content-de" class="container seo-content lang-content">
-        <h2>Die Macht des Zinseszinses</h2>
-        <p>Zinseszins ist Zins auf Zins. Er lässt Ihr Geld im Laufe der Zeit schneller wachsen.</p>
-    </div>
-    <div id="content-es" class="container seo-content lang-content">
-        <h2>El Poder del Interés Compuesto</h2>
-        <p>El interés compuesto es interés sobre interés. Hace que tu dinero crezca más rápido con el tiempo.</p>
-    </div>
+        <div class="explanation-box">
+            <h3>Matematikai háttér</h3>
+            <p>A grafikon és a számítás figyelembe veszi a befizetés időpontját és a kamatos kamat hatását.</p>
+            
+            <h4>A használt képlet:</h4>
+            <p style="font-size: 1.1em; overflow-x: auto;">
+                \[
+                FV = P\left(1+\frac{r}{n}\right)^{nt} + M \frac{\left(1+\frac{r}{n}\right)^{nt}-1}{\frac{r}{n}} \times \left(1+T_{type} \cdot \frac{r}{n}\right)
+                \]
+            </p>
 
+            <h4>Jelmagyarázat:</h4>
+            <ul>
+                <li>\(FV\): Jövőbeli érték (Végösszeg).</li>
+                <li>\(P\): Kezdőtőke (Principal).</li>
+                <li>\(M\): Havi megtakarítás.</li>
+                <li>\(r\): Éves nominális kamatláb tizedesjegyként (pl. 0.07).</li>
+                <li>\(n\): Tőkésítés gyakorisága (havi = 12).</li>
+                <li>\(t\): Évek száma.</li>
+                <li>\(T_{type}\): Befizetés típusa. Értéke <strong>1</strong>, ha hónap elején fizetsz, és <strong>0</strong>, ha hónap végén.</li>
+            </ul>
+
+            <p style="font-size:0.9em; margin-top:10px;"><i>Megjegyzés: Ha 0% a kamat, a rendszer automatikusan egyszerű összeadással számol (Kezdőtőke + Összes havi befizetés).</i></p>
+
+            <hr style="border-color: #334155; margin: 20px 0;">
+
+            <h3>Miért kerül sokba a várakozás?</h3>
+            <p>Sokan azt hiszik, ha 10 évvel később kezdik, csak "kicsit" lesz kevesebb pénzük. Ez tévedés.</p>
+            
+            <p><strong>A példa:</strong> Ha 20 évesen elkezdesz befektetni havi 20.000 Ft-ot (feltételezve havi befizetést és 8% nominális éves hozamot), 60 éves korodra kb. <strong>70 millió forintod</strong> lesz.</p>
+            
+            <p>Ha 10 évet vársz, és 30 évesen kezded el ugyanezt, 60 éves korodra csak <strong>30 millió forintod</strong> lesz.</p>
+            <p>A 10 év késés nem 25%-kal csökkentette a pénzedet, hanem <strong>több mint a felével!</strong> Ennek oka, hogy a kamatos kamat az utolsó években "robban" igazán, és a késlekedéssel pont ezeket a legjövedelmezőbb éveket veszíted el.</p>
+        </div>
+    </div>
+<div class="container seo-content">
+        <h2>Pénzügyi Kisokos: A Kamatos Kamat Ereje</h2>
+        
+        <h3>Mi az a kamatos kamat?</h3>
+        <p>Albert Einstein állítólag a világ nyolcadik csodájának nevezte. A kamatos kamat lényege, hogy nemcsak a saját befizetett pénzed (a tőke) után kapsz kamatot, hanem a korábban megtermelt kamatok után is. Ez egy "hógolyó-effektust" indít el: ahogy nő a vagyonod, egyre gyorsabban termeli az újabb pénzt.</p>
+
+        <h3>Mi a különbség a nominális és a reálkamat között?</h3>
+        <p>A kalkulátorunk <strong>nominális</strong> értékkel számol. Ez azt jelenti, hogy a jövőbeli pénzösszeget mutatja számszerűleg. Fontos azonban tudni, hogy az infláció miatt 10 vagy 20 év múlva 1 millió forint vásárlóértéke kevesebb lesz, mint ma. Ha például a bank 7%-ot fizet, de az infláció 5%, akkor a <strong>reálkamat</strong> (a valódi vagyonnövekedés) valójában csak kb. 2%.</p>
+
+        <h3>Mikor érdemes elkezdeni a megtakarítást?</h3>
+        <p>A válasz egyszerű: <strong>tegnap</strong>. A második legjobb időpont pedig <strong>ma</strong>. A kamatos kamat legfontosabb tényezője nem a kamatláb nagysága, hanem az <strong>idő</strong>. Egy 25 évesen elkezdett, havi 20 ezer forintos megtakarítás többet érhet nyugdíjas korra, mint egy 45 évesen indított havi 100 ezer forintos program. Minél hosszabb a futamidő, annál drasztikusabb a görbe emelkedése.</p>
+
+        <h3>Gyakori hibák befektetéskor</h3>
+        <ul>
+            <li><strong>Túl későn kezdés:</strong> Sokan várnak a "nagy pénzre", pedig kis összeggel is érdemes elindulni.</li>
+            <li><strong>A költségek figyelmen kívül hagyása:</strong> A banki költségek, számlavezetési díjak csökkenthetik a hozamot.</li>
+            <li><strong>Érzelmi döntések:</strong> A tőzsdei hullámvölgyeknél sokan kiveszik a pénzüket, pont akkor, amikor bent kéne hagyniuk.</li>
+        </ul>
+    </div>
     <footer>
-        <p>&copy; 2025 <span data-lang="footer_rights">All Rights Reserved.</span> | <a href="privacy.html" data-lang="nav_privacy">Privacy</a></p>
+        <p>&copy; 2025 Minden jog fenntartva. | <a href="index.html" style="color:#64748b; text-decoration:none;">Főoldal</a> | <a href="privacy.html" style="color:#64748b; text-decoration:none;">Adatvédelem</a></p>
+        <p style="font-size:0.8em;">Az oldalon található számítások tájékoztató jellegűek.</p>
     </footer>
 
     <script>
-        let myChart = null;
+        let myChart = null; // Global variable for the Chart instance
 
         function calculateInterest() {
-            let principal = parseFloat(document.getElementById('start-amount').value);
-            let monthly = parseFloat(document.getElementById('monthly-contribution').value);
-            let rate = parseFloat(document.getElementById('interest-rate').value);
-            let years = parseFloat(document.getElementById('years').value);
+            // 1. INPUT RETRIEVAL
+            let P = parseFloat(document.getElementById('principal').value);
+            let M = parseFloat(document.getElementById('monthly').value);
+            let R_percent = parseFloat(document.getElementById('rate').value);
+            let T = parseFloat(document.getElementById('years').value);
+            let isBeginning = document.getElementById('beginning').checked;
 
-            if (isNaN(principal)) principal = 0;
-            if (isNaN(monthly)) monthly = 0;
-            if (isNaN(rate)) rate = 0;
-            if (isNaN(years) || years <= 0) return;
+            // 2. INPUT VALIDATION
+            if (isNaN(P) || P < 0) { P = 0; } 
+            if (isNaN(M) || M < 0) { M = 0; }
+            if (isNaN(R_percent) || R_percent < 0) { R_percent = 0; }
 
-            let months = years * 12;
-            let monthlyRate = rate / 100 / 12;
-
-            let labels = [];
-            let dataInvested = [];
-            let dataTotal = [];
-
-            let currentTotal = principal;
-            let totalInvested = principal;
-
-            for (let i = 0; i <= months; i++) {
-                if (i % 12 === 0) labels.push(i / 12 + "Y");
-                else labels.push(""); 
-
-                dataInvested.push(totalInvested);
-                dataTotal.push(currentTotal);
-
-                currentTotal = currentTotal * (1 + monthlyRate) + monthly;
-                totalInvested += monthly;
+            if (isNaN(T) || T <= 0) {
+                alert("Az évek száma legyen pozitív!");
+                return;
             }
 
-            const lang = localStorage.getItem('selectedLang') || 'en';
-            const t = translations[lang] || translations['en'];
-            const currency = lang === 'hu' ? 'HUF' : 'USD';
-            const locale = lang === 'hu' ? 'hu-HU' : 'en-US';
-            
-            let formatter = new Intl.NumberFormat(locale, { style: 'currency', currency: currency, maximumFractionDigits: 0 });
-            let profit = currentTotal - totalInvested;
+            // 3. CALCULATION LOGIC
+            let R = R_percent / 100;
+            let months = T * 12;
+            let monthlyRate = R / 12;
+            let futureValue = 0;
+            let invested = P + (M * months);
+
+            // Arrays for Chart.js
+            let labels = []; 
+            let dataTotal = []; 
+            let dataInvested = []; 
+
+            // Iterative calculation for each year
+            for (let i = 0; i <= T; i++) {
+                let currentMonths = i * 12;
+                let currentFV = 0;
+                let currentInvested = P + (M * currentMonths);
+
+                if (R === 0) {
+                    currentFV = P + (M * currentMonths);
+                } else {
+                    let compoundInterestFactor = Math.pow(1 + monthlyRate, currentMonths);
+                    let principalGrow = P * compoundInterestFactor;
+                    let annuity = (M * (compoundInterestFactor - 1)) / monthlyRate;
+                    
+                    if (isBeginning) {
+                        annuity = annuity * (1 + monthlyRate);
+                    }
+                    
+                    currentFV = principalGrow + annuity;
+                }
+
+                // Year 0 is labeled "Kezdés"
+                if (i === 0) {
+                    labels.push("Kezdés");
+                } else {
+                    labels.push(i + ". év");
+                }
+
+                dataTotal.push(currentFV);
+                dataInvested.push(currentInvested);
+                
+                if (i === T) futureValue = currentFV;
+            }
+
+            // 4. DISPLAY RESULTS
+            let interestEarned = futureValue - invested;
+            let formatter = new Intl.NumberFormat('hu-HU', { style: 'currency', currency: 'HUF', maximumFractionDigits: 0 });
 
             document.getElementById('result').style.display = 'block';
-            document.getElementById('result').innerHTML = 
-                `<strong>${t.res_final_balance}</strong> <span style="font-size:1.5em; color:#10b981">${formatter.format(currentTotal)}</span><br>` +
-                `<div style="font-size:0.9em; margin-top:10px; color:#cbd5e1;">` +
-                `${t.res_total_invested} ${formatter.format(totalInvested)}<br>` +
-                `${t.res_profit} ${formatter.format(profit)}` +
-                `</div>`;
+            document.getElementById('final-amount').innerText = formatter.format(futureValue);
+            document.getElementById('total-invested').innerText = formatter.format(invested);
+            document.getElementById('total-interest').innerText = formatter.format(interestEarned);
 
+            // 5. RENDER CHART
             document.getElementById('chart-wrapper').style.display = 'block';
-            let ctx = document.getElementById('growthChart').getContext('2d');
+            drawChart(labels, dataTotal, dataInvested);
+            
+            if (window.MathJax) { MathJax.typeset(); }
+        }
 
-            if (myChart) myChart.destroy();
+        // Helper function to render Chart.js graph
+        function drawChart(labels, dataTotal, dataInvested) {
+            const ctx = document.getElementById('growthChart').getContext('2d');
+
+            if (myChart) {
+                myChart.destroy();
+            }
 
             myChart = new Chart(ctx, {
                 type: 'line',
@@ -138,31 +229,49 @@
                     labels: labels,
                     datasets: [
                         {
-                            label: t.chart_invested,
-                            data: dataInvested,
-                            borderColor: '#94a3b8',
-                            backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                            label: 'Teljes Vagyon',
+                            data: dataTotal,
+                            borderColor: '#10b981', // Green
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
                             fill: true,
-                            pointRadius: 0
+                            tension: 0.4
                         },
                         {
-                            label: t.chart_profit,
-                            data: dataTotal,
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                            label: 'Saját Befizetés',
+                            data: dataInvested,
+                            borderColor: '#3b82f6', // Blue
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
                             fill: true,
-                            pointRadius: 0
+                            borderDash: [5, 5], 
+                            tension: 0.4
                         }
                     ]
                 },
                 options: {
                     responsive: true,
-                    interaction: { mode: 'index', intersect: false },
-                    scales: {
-                        x: { grid: { color: '#334155' }, ticks: { color: '#cbd5e1', maxTicksLimit: 10 } },
-                        y: { grid: { color: '#334155' }, ticks: { color: '#cbd5e1' } }
+                    // UPDATED TOOLTIP LOGIC
+                    plugins: {
+                        legend: { labels: { color: 'white' } },
+                        tooltip: { 
+                            mode: 'index', 
+                            intersect: false,
+                            callbacks: {
+                                // Dynamic title based on context
+                                title: function(context) {
+                                    let label = context[0].label;
+                                    if (label === "Kezdés") {
+                                        return label + " - Kezdő állapot";
+                                    } else {
+                                        return label + " - Év végi állapot";
+                                    }
+                                }
+                            }
+                        }
                     },
-                    plugins: { legend: { labels: { color: '#fff' } } }
+                    scales: {
+                        x: { ticks: { color: '#cbd5e1' }, grid: { color: '#334155' } },
+                        y: { ticks: { color: '#cbd5e1' }, grid: { color: '#334155' } }
+                    }
                 }
             });
         }
