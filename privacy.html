@@ -9,14 +9,18 @@
         .privacy-container {
             max-width: 800px;
             margin: 40px auto;
-            padding: 20px;
+            padding: 30px;
+            background-color: #1e293b; /* Sötét háttér, mint a SEO boxnál */
+            border-radius: 10px;
             color: #cbd5e1;
             line-height: 1.6;
         }
-        .privacy-container h1 { color: #fff; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; }
-        .privacy-container h2 { color: #60a5fa; margin-top: 30px; }
+        .privacy-container h1 { color: #fff; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; margin-bottom: 20px; }
+        .privacy-container h2 { color: #60a5fa; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
+        .privacy-container h3 { color: #e2e8f0; margin-top: 20px; }
         .privacy-container ul { margin-left: 20px; margin-bottom: 15px; }
-        .privacy-container a { color: #3b82f6; }
+        .privacy-container a { color: #3b82f6; text-decoration: none; }
+        .privacy-container a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -31,46 +35,82 @@
     </nav>
 
     <div class="container privacy-container">
+
         <h1>Adatvédelmi Nyilatkozat</h1>
-        <p><em>Utolsó frissítés: 2025. december 21.</em></p>
+        <p><em>Utolsó frissítés: 2025. január 1.</em></p>
 
-        <p>Üdvözlünk a Pénzügyi Modellező Portálon. Elkötelezettek vagyunk a látogatóink személyes adatainak védelme iránt. Ez a dokumentum részletezi, hogyan kezeljük az adatokat.</p>
+        <h2>1. Az adatkezelő</h2>
+        <p>
+        A weboldal üzemeltetője: <strong>Pénzügyi Modellező Portál</strong><br>
+        Kapcsolat: GitHub profil (nyilvános)
+        </p>
 
-        <h2>1. Adatgyűjtés és Adattárolás</h2>
-        <p>Weboldalunk "kliens oldali" (client-side) technológiával működik. Ez azt jelenti, hogy:</p>
+        <h2>2. Közvetlen adatkezelés</h2>
+        <p>
+        A weboldal kalkulátorai kizárólag <strong>kliens oldalon</strong> (az Ön böngészőjében) működnek.
+        </p>
         <ul>
-            <li>A kalkulátorokba beírt adatok (pl. hitelösszeg, kamatláb) <strong>kizárólag az Ön eszközén</strong> (böngészőjében) kerülnek feldolgozásra.</li>
-            <li>Ezeket az adatokat <strong>nem küldjük el szerverre</strong>, és nem mentjük el semmilyen adatbázisban.</li>
-            <li>Az oldal bezárása vagy frissítése után a beírt adatok törlődnek.</li>
+            <li>A felhasználó által megadott pénzügyi adatok (pl. hitelösszeg, kamatláb) nem kerülnek elküldésre szerverre.</li>
+            <li>Az adatokat nem mentjük, nem tároljuk, és nem dolgozzuk fel külső rendszerekben.</li>
+            <li>Az oldal frissítésekor vagy bezárásakor minden megadott adat automatikusan törlődik.</li>
         </ul>
+        <p>
+        <strong>A weboldal üzemeltetője nem gyűjt és nem kezel közvetlenül személyes adatokat.</strong>
+        </p>
 
-        <h2>2. Sütik (Cookies) és Harmadik Fél Szolgáltatók</h2>
-        <p>Bár mi közvetlenül nem gyűjtünk személyes adatokat, harmadik féltől származó szolgáltatásokat használunk az oldal működtetéséhez és fenntartásához.</p>
+        <h2>3. Harmadik fél által végzett adatkezelés</h2>
 
         <h3>Google AdSense</h3>
-        <p>Külső hirdetési szolgáltatókat, például a Google-t használunk hirdetések megjelenítésére, amikor felkeresi webhelyünket.</p>
+        <p>
+        A weboldal hirdetéseket jelenít meg a Google AdSense szolgáltatáson keresztül.
+        </p>
         <ul>
-            <li>A Google sütiket (cookie-kat) használ a hirdetések személyre szabásához.</li>
-            <li>A Google DART cookie lehetővé teszi, hogy hirdetéseket jelenítsen meg a felhasználók számára az interneten tett látogatásaik alapján.</li>
-            <li>A felhasználók kikapcsolhatják a személyre szabott hirdetéseket a <a href="https://adssettings.google.com" target="_blank">Google Hirdetésbeállítások</a> oldalon.</li>
+            <li>A Google cookie-kat (sütiket) használhat a hirdetések megjelenítéséhez.</li>
+            <li>A cookie-k lehetővé teszik a nem személyre szabott vagy személyre szabott hirdetések megjelenítését az Ön látogatásai alapján.</li>
+            <li>A hirdetések személyre szabása a felhasználó Google-fiók beállításain keresztül szabályozható.</li>
+        </ul>
+        <p>
+        A Google adatkezelési irányelvei itt érhetők el:
+        <a href="https://policies.google.com/privacy" target="_blank">Google Adatvédelmi Irányelvek</a>
+        </p>
+
+        <h3>Google Search Console</h3>
+        <p>
+        A weboldal a Google Search Console szolgáltatást használja a technikai működés ellenőrzésére.
+        </p>
+        <ul>
+            <li>A szolgáltatás anonim, összesített statisztikai adatokat biztosít.</li>
+            <li>Nem teszi lehetővé egyedi felhasználók személyes azonosítását.</li>
         </ul>
 
-        <h3>Google Search Console & Analytics</h3>
-        <p>Névtelenített forgalmi adatokat gyűjthetünk az oldal teljesítményének mérésére (pl. látogatók száma, megtekintett oldalak).</p>
+        <h2>4. Sütik (Cookies)</h2>
+        <p>
+        A weboldal közvetlenül nem helyez el saját sütiket, azonban a Google AdSense szolgáltatás
+        harmadik féltől származó sütiket használhat a hirdetések kiszolgálásához.
+        </p>
+        <p>
+        A sütik használata a böngésző beállításaiban bármikor letiltható.
+        </p>
 
-        <h2>3. Az Ön jogai (GDPR)</h2>
-        <p>Az Európai Unió Általános Adatvédelmi Rendelete (GDPR) értelmében Önnek joga van:</p>
+        <h2>5. Az érintettek jogai (GDPR)</h2>
+        <p>Önt az Európai Unió szabályozása (GDPR) alapján az alábbi jogok illetik meg:</p>
         <ul>
-            <li>Tájékoztatást kérni az adatkezelésről.</li>
-            <li>Tiltakozni a sütik használata ellen (ezt a weboldalra belépve a felugró ablakban, vagy a böngésző beállításaiban teheti meg).</li>
+            <li>Tájékoztatáshoz való jog</li>
+            <li>Hozzáféréshez való jog</li>
+            <li>Adatkezelés korlátozásához való jog</li>
+            <li>Tiltakozás joga a sütik használata ellen</li>
         </ul>
 
-        <h2>4. Kapcsolat</h2>
-        <p>Ha kérdése van az adatvédelmmel kapcsolatban, kérjük, keressen minket a GitHub profilunkon keresztül.</p>
+        <h2>6. Jogi Nyilatkozat</h2>
+        <p>
+        A weboldalon található számítások és kalkulátorok kizárólag tájékoztató és oktatási jellegűek,
+        nem minősülnek hivatalos pénzügyi tanácsadásnak vagy ajánlattételnek. A számítások pontosságáért (pl. árfolyamingadozás vagy banki kerekítések miatt) felelősséget nem vállalunk.
+        </p>
+
     </div>
 
     <footer>
-        <p>&copy; 2025 Minden jog fenntartva.</p>
+        <p>&copy; 2025 Minden jog fenntartva. | <a href="index.html" style="color:#64748b; text-decoration:none;">Főoldal</a> | <a href="privacy.html" style="color:#64748b; text-decoration:none;">Adatvédelem</a></p>
     </footer>
 
 </body>
