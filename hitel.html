@@ -25,13 +25,13 @@
 
     <div class="container">
         <h1>Hitel Törlesztő Kalkulátor</h1>
-        <p style="text-align:center; color:#94a3b8;">Mennyit kell fizetned havonta? Számold ki pontosan.</p>
+        <p style="text-align:center; color:#94a3b8;">Mennyit kell fizetned havonta? Számold ki pontosan!</p>
         
         <label>Hitelösszeg (Ft):</label>
-        <input type="number" id="loan-amount" placeholder="Pl. 10000000" min="0">
+        <input type="text" id="loan-amount" placeholder="Pl. 10 000 000" oninput="formatNumberInput(this)">
 
         <label>Éves nominális kamatláb (%):</label>
-        <input type="number" id="interest-rate" placeholder="Pl. 8.5" min="0">
+        <input type="number" id="interest-rate" placeholder="Pl. 8.5" min="0" step="0.1">
 
         <label>Futamidő (Év):</label>
         <input type="number" id="loan-years" placeholder="Pl. 20" min="1">
@@ -78,11 +78,11 @@
             <p><small><i>Figyelem: Ez a számítás tájékoztató jellegű, és nem tartalmazza az esetleges egyéb banki költségeket (számlavezetés, biztosítás), azaz nem a THM-et mutatja, hanem az ügyleti kamatot.</i></small></p>
         </div>
     </div>
-<div class="container seo-content">
+    <div class="container seo-content">
         <h2>Hitelkalauz: Mit kell tudni felvétel előtt?</h2>
 
         <h3>Hogyan működik az Annuitásos Hitel?</h3>
-        <p>A magyarországi lakossági hitelek (lakáshitel, személyi kölcsön) többsége úgynevezett <strong>annuitásos törlesztésű</strong>. Ez azt jelenti, hogy a futamidő végéig (kamatperióduson belül) minden hónapban <strong>pontosan ugyanannyit fizetsz</strong>. Bár az összeg fix, a belső összetétele változik:</p>
+        <p>A magyarországi lakossági hitelek (lakáshitel, személyi kölcsön) többsége úgynevezett <strong>annuitásos törlesztésű</strong>. Ez azt jelenti, hogy a futamidő végéig (kamatperióduson belül) minden hónapban <strong>pontosan ugyanannyit fizetsz!</strong> Bár az összeg fix, a belső összetétele változik:</p>
         <ul>
             <li><strong>A futamidő elején:</strong> A törlesztőrészlet nagy része a <em>kamatot</em> fizeti, és csak kis része csökkenti a tőketartozást.</li>
             <li><strong>A futamidő végén:</strong> Fordul a kocka, ilyenkor már alig fizetsz kamatot, és szinte a teljes összeg a tőkét törleszti.</li>
@@ -105,44 +105,57 @@
     </footer>
 
     <script>
+        // --- 1. FORMATTER SCRIPT ---
+        // Ez intézi a szóközöket gépelés közben
+        function formatNumberInput(input) {
+            // 1. Kiszedjük a nem szám karaktereket (kivéve ha tizedes pont lenne, de itt egész számokat várunk)
+            let original = input.value.replace(/\D/g, ''); 
+            
+            // 2. Ha van érték, formázzuk
+            if (original) {
+                // Regex: minden 3. számjegy után teszünk szóközt hátulról, ha nem az az utolsó
+                input.value = original.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            } else {
+                input.value = "";
+            }
+        }
+
         function calculateLoan() {
-            // 1. INPUT RETRIEVAL
-            let amount = parseFloat(document.getElementById('loan-amount').value);
+            // --- 2. INPUT BEOLVASÁS (FONTOS: Szóközök törlése!) ---
+            // A .value-ból kiszedjük a " " karaktereket a replace segítségével
+            let amountStr = document.getElementById('loan-amount').value.replace(/\s/g, '');
+            let amount = parseFloat(amountStr);
+            
             let rate = parseFloat(document.getElementById('interest-rate').value); 
             let years = parseFloat(document.getElementById('loan-years').value);
 
-            // 2. VALIDATION
-            // Check if inputs are numbers and non-negative
+            // 3. VALIDATION
             if (isNaN(amount) || amount < 0) { amount = 0; }
             if (isNaN(rate) || rate < 0) { rate = 0; }
 
-            // Strict validation for Years: Must be a number AND greater than 0
             if (isNaN(years) || years <= 0) {
                 alert("A futamidőnek nagyobbnak kell lennie, mint 0 év!");
                 return;
             }
 
-            // 3. CALCULATION
-            let n = years * 12; // Total number of months
+            // 4. CALCULATION
+            let n = years * 12; 
             let monthlyPayment = 0;
             let totalPayment = 0;
             let totalInterest = 0;
 
-            // Updated Logic: Use <= to handle 0 and potential floating point edges safely
             if (rate <= 0) {
-                // SPECIAL CASE: 0% INTEREST
                 monthlyPayment = amount / n;
                 totalPayment = amount;
                 totalInterest = 0;
             } else {
-                // STANDARD CASE: ANNUITY FORMULA
-                let r = (rate / 100) / 12; // Monthly interest rate
+                let r = (rate / 100) / 12;
                 monthlyPayment = amount * ( (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1) );
                 totalPayment = monthlyPayment * n;
                 totalInterest = totalPayment - amount;
             }
 
-            // 4. DISPLAY RESULTS
+            // 5. DISPLAY RESULTS
             let formatter = new Intl.NumberFormat('hu-HU', { style: 'currency', currency: 'HUF', maximumFractionDigits: 0 });
 
             document.getElementById('loan-result').style.display = 'block';
@@ -153,7 +166,6 @@
                 `Ebből kamat: ${formatter.format(totalInterest)}` +
                 `</div>`;
                 
-            // Trigger MathJax re-render
             if (window.MathJax) { MathJax.typeset(); }
         }
     </script>

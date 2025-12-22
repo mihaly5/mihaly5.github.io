@@ -29,14 +29,14 @@
         <h1>Kamatos Kamat Kalkulátor</h1>
         
         <label>Kezdőtőke (Ft):</label>
-        <input type="number" id="principal" placeholder="Pl. 1000000" min="0">
+        <input type="text" id="principal" placeholder="Pl. 1 000 000" oninput="formatNumberInput(this)">
 
         <label>Havi megtakarítás (Ft):</label>
-        <input type="number" id="monthly" placeholder="Pl. 50000" min="0">
+        <input type="text" id="monthly" placeholder="Pl. 50 000" oninput="formatNumberInput(this)">
 
         <label>Éves nominális kamatláb (%):</label>
         <div style="font-size: 0.85em; color: #94a3b8; margin-top: -8px; margin-bottom: 8px;">(havi tőkésítéssel számolva)</div>
-        <input type="number" id="rate" placeholder="Pl. 7" min="0">
+        <input type="number" id="rate" placeholder="Pl. 7" min="0" step="0.1">
 
         <label>Időtáv (Év):</label>
         <input type="number" id="years" placeholder="Pl. 10" min="1">
@@ -101,7 +101,7 @@
             <hr style="border-color: #334155; margin: 20px 0;">
 
             <h3>Miért kerül sokba a várakozás?</h3>
-            <p>Sokan azt hiszik, ha 10 évvel később kezdik, csak "kicsit" lesz kevesebb pénzük. Ez tévedés.</p>
+            <p>Sokan azt hiszik, ha 10 évvel később kezdik, csak "kicsit" lesz kevesebb pénzük! Ez tévedés.</p>
             
             <p><strong>A példa:</strong> Ha 20 évesen elkezdesz befektetni havi 20.000 Ft-ot (feltételezve havi befizetést és 8% nominális éves hozamot), 60 éves korodra kb. <strong>70 millió forintod</strong> lesz.</p>
             
@@ -114,7 +114,7 @@
         <h2>Pénzügyi Kisokos: A Kamatos Kamat Ereje</h2>
         
         <h3>Mi az a kamatos kamat?</h3>
-        <p>Albert Einstein állítólag a világ nyolcadik csodájának nevezte. A kamatos kamat lényege, hogy nemcsak a saját befizetett pénzed (a tőke) után kapsz kamatot, hanem a korábban megtermelt kamatok után is. Ez egy "hógolyó-effektust" indít el: ahogy nő a vagyonod, egyre gyorsabban termeli az újabb pénzt.</p>
+        <p>Albert Einstein állítólag a világ nyolcadik csodájának nevezte. A kamatos kamat lényege, hogy nemcsak a saját befizetett pénzed (a tőke) után kapsz kamatot, hanem a korábban megtermelt kamatok után is! Ez egy "hógolyó-effektust" indít el: ahogy nő a vagyonod, egyre gyorsabban termeli az újabb pénzt.</p>
 
         <h3>Mi a különbség a nominális és a reálkamat között?</h3>
         <p>A kalkulátorunk <strong>nominális</strong> értékkel számol. Ez azt jelenti, hogy a jövőbeli pénzösszeget mutatja számszerűleg. Fontos azonban tudni, hogy az infláció miatt 10 vagy 20 év múlva 1 millió forint vásárlóértéke kevesebb lesz, mint ma. Ha például a bank 7%-ot fizet, de az infláció 5%, akkor a <strong>reálkamat</strong> (a valódi vagyonnövekedés) valójában csak kb. 2%.</p>
@@ -136,17 +136,31 @@
     </footer>
 
     <script>
-        let myChart = null; // Global variable for the Chart instance
+        // --- 1. FORMATTER SCRIPT ---
+        function formatNumberInput(input) {
+            let original = input.value.replace(/\D/g, ''); 
+            if (original) {
+                input.value = original.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            } else {
+                input.value = "";
+            }
+        }
+
+        let myChart = null; 
 
         function calculateInterest() {
-            // 1. INPUT RETRIEVAL
-            let P = parseFloat(document.getElementById('principal').value);
-            let M = parseFloat(document.getElementById('monthly').value);
+            // --- 2. INPUT BEOLVASÁS (SZÓKÖZÖK TÖRLÉSE) ---
+            let pStr = document.getElementById('principal').value.replace(/\s/g, '');
+            let P = parseFloat(pStr);
+            
+            let mStr = document.getElementById('monthly').value.replace(/\s/g, '');
+            let M = parseFloat(mStr);
+            
             let R_percent = parseFloat(document.getElementById('rate').value);
             let T = parseFloat(document.getElementById('years').value);
             let isBeginning = document.getElementById('beginning').checked;
 
-            // 2. INPUT VALIDATION
+            // 3. VALIDATION
             if (isNaN(P) || P < 0) { P = 0; } 
             if (isNaN(M) || M < 0) { M = 0; }
             if (isNaN(R_percent) || R_percent < 0) { R_percent = 0; }
@@ -156,19 +170,17 @@
                 return;
             }
 
-            // 3. CALCULATION LOGIC
+            // 4. CALCULATION LOGIC
             let R = R_percent / 100;
             let months = T * 12;
             let monthlyRate = R / 12;
             let futureValue = 0;
             let invested = P + (M * months);
 
-            // Arrays for Chart.js
             let labels = []; 
             let dataTotal = []; 
             let dataInvested = []; 
 
-            // Iterative calculation for each year
             for (let i = 0; i <= T; i++) {
                 let currentMonths = i * 12;
                 let currentFV = 0;
@@ -188,7 +200,6 @@
                     currentFV = principalGrow + annuity;
                 }
 
-                // Year 0 is labeled "Kezdés"
                 if (i === 0) {
                     labels.push("Kezdés");
                 } else {
@@ -201,7 +212,7 @@
                 if (i === T) futureValue = currentFV;
             }
 
-            // 4. DISPLAY RESULTS
+            // 5. DISPLAY RESULTS
             let interestEarned = futureValue - invested;
             let formatter = new Intl.NumberFormat('hu-HU', { style: 'currency', currency: 'HUF', maximumFractionDigits: 0 });
 
@@ -210,20 +221,16 @@
             document.getElementById('total-invested').innerText = formatter.format(invested);
             document.getElementById('total-interest').innerText = formatter.format(interestEarned);
 
-            // 5. RENDER CHART
+            // 6. RENDER CHART
             document.getElementById('chart-wrapper').style.display = 'block';
             drawChart(labels, dataTotal, dataInvested);
             
             if (window.MathJax) { MathJax.typeset(); }
         }
 
-        // Helper function to render Chart.js graph
         function drawChart(labels, dataTotal, dataInvested) {
             const ctx = document.getElementById('growthChart').getContext('2d');
-
-            if (myChart) {
-                myChart.destroy();
-            }
+            if (myChart) { myChart.destroy(); }
 
             myChart = new Chart(ctx, {
                 type: 'line',
@@ -233,7 +240,7 @@
                         {
                             label: 'Teljes Vagyon',
                             data: dataTotal,
-                            borderColor: '#10b981', // Green
+                            borderColor: '#10b981',
                             backgroundColor: 'rgba(16, 185, 129, 0.2)',
                             fill: true,
                             tension: 0.4
@@ -241,7 +248,7 @@
                         {
                             label: 'Saját Befizetés',
                             data: dataInvested,
-                            borderColor: '#3b82f6', // Blue
+                            borderColor: '#3b82f6',
                             backgroundColor: 'rgba(59, 130, 246, 0.1)',
                             fill: true,
                             borderDash: [5, 5], 
@@ -251,21 +258,15 @@
                 },
                 options: {
                     responsive: true,
-                    // UPDATED TOOLTIP LOGIC
                     plugins: {
                         legend: { labels: { color: 'white' } },
                         tooltip: { 
                             mode: 'index', 
                             intersect: false,
                             callbacks: {
-                                // Dynamic title based on context
                                 title: function(context) {
                                     let label = context[0].label;
-                                    if (label === "Kezdés") {
-                                        return label + " - Kezdő állapot";
-                                    } else {
-                                        return label + " - Év végi állapot";
-                                    }
+                                    return (label === "Kezdés") ? label + " - Kezdő állapot" : label + " - Év végi állapot";
                                 }
                             }
                         }
