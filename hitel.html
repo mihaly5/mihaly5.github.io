@@ -1,160 +1,118 @@
 <!DOCTYPE html>
-<html lang="hu">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hitelkalkulátor - Számold ki a Törlesztődet</title>
+    <title>Loan Calculator</title>
+    
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2023839620373581"
      crossorigin="anonymous"></script>
-    <meta name="description" content="Ingyenes online hitelkalkulátor. Számold ki a havi törlesztőrészletet a felvett összeg, a kamat és a futamidő alapján. Annuitásos hitel számítás.">
+
     <link rel="stylesheet" href="style.css">
-    
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="lang.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
     <nav>
         <ul>
-            <li><a href="index.html">Főoldal</a></li>
-            <li><a href="kamatos.html">Befektetés</a></li>
-            <li><a href="hitel.html" style="color:#3b82f6;">Hitelkalkulátor</a></li>
-            <li><a href="black_scholes.html">Pro: Black-Scholes</a></li>
+            <li><a href="index.html" data-lang="nav_home">Home</a></li>
+            <li><a href="kamatos.html" data-lang="nav_invest">Investment</a></li>
+            <li><a href="hitel.html" style="color:#3b82f6;" data-lang="nav_loan">Loan</a></li>
+            <li><a href="black_scholes.html" data-lang="nav_bs">Black-Scholes</a></li>
+            <li>
+                <select id="lang-selector" class="lang-select">
+                    <option value="hu">🇭🇺 HU</option>
+                    <option value="en">🇬🇧 EN</option>
+                    <option value="de">🇩🇪 DE</option>
+                    <option value="es">🇪🇸 ES</option>
+                </select>
+            </li>
         </ul>
     </nav>
 
     <div class="container">
-        <h1>Hitel Törlesztő Kalkulátor</h1>
-        <p style="text-align:center; color:#94a3b8;">Mennyit kell fizetned havonta? Számold ki pontosan.</p>
+        <h1 data-lang="loan_title">Loan Repayment Calculator</h1>
+        <p style="text-align:center; color:#94a3b8;" data-lang="loan_sub">Calculate your monthly payments.</p>
         
-        <label>Hitelösszeg (Ft):</label>
-        <input type="number" id="loan-amount" placeholder="Pl. 10000000" min="0">
+        <label data-lang="lbl_loan_amount">Loan Amount:</label>
+        <input type="number" id="loan-amount" placeholder="10000000" min="0">
 
-        <label>Éves nominális kamatláb (%):</label>
-        <input type="number" id="interest-rate" placeholder="Pl. 8.5" min="0">
+        <label data-lang="lbl_interest_rate">Interest Rate (%):</label>
+        <input type="number" id="interest-rate" placeholder="8.5" min="0">
 
-        <label>Futamidő (Év):</label>
-        <input type="number" id="loan-years" placeholder="Pl. 20" min="1">
+        <label data-lang="lbl_years">Term (Years):</label>
+        <input type="number" id="loan-years" placeholder="20" min="1">
 
-        <button class="calc-btn" onclick="calculateLoan()">Törlesztő Kiszámolása</button>
+        <button class="calc-btn" onclick="calculateLoan()" data-lang="btn_calc">Calculate</button>
 
         <div class="result" id="loan-result" style="display:none;"></div>
-
-        <div class="explanation-box">
-            <h3>Hogyan működik a számolás?</h3>
-            <p>Ez a kalkulátor az úgynevezett <strong>annuitásos módszert</strong> használja (egyenletes törlesztés). Ez a banki standard a lakás- és személyi hiteleknél.</p>
-            
-            <h4>Eredmény magyarázat:</h4>
-            <ul>
-                <li><strong>Havi Törlesztő:</strong> Ez az az összeg, amit minden hónapban fixen fizetned kell a futamidő végéig.</li>
-                <li><strong>Teljes Visszafizetés:</strong> A felvett tőke + az évek alatt kifizetett összes kamat.</li>
-            </ul>
-
-            <h4>A használt képletek:</h4>
-            
-            <p><strong>1. Normál eset (ha van kamat):</strong></p>
-            <p style="font-size: 1.1em; overflow-x: auto;">
-                \[
-                PMT = P \cdot \frac{r(1+r)^n}{(1+r)^n - 1}
-                \]
-            </p>
-
-            <p><strong>2. Speciális eset (ha 0% a kamat):</strong></p>
-            <p>Ha kamatmentes hitelt veszel fel (pl. családi kölcsön, támogatott hitelek), a képlet egyszerűsödik:</p>
-            <p style="font-size: 1.1em; overflow-x: auto;">
-                \[
-                PMT = \frac{P}{n}
-                \]
-            </p>
-            
-            <h4>Jelmagyarázat:</h4>
-            <ul>
-                <li>\(PMT\): Havi törlesztőrészlet.</li>
-                <li>\(P\): Felvett hitelösszeg (Principal).</li>
-                <li>\(r\): Havi kamatláb (Éves nominális kamat / 12).</li>
-                <li>\(n\): A futamidő hónapokban (Évek * 12).</li>
-            </ul>
-            
-            <p><small><i>Figyelem: Ez a számítás tájékoztató jellegű, és nem tartalmazza az esetleges egyéb banki költségeket (számlavezetés, biztosítás), azaz nem a THM-et mutatja, hanem az ügyleti kamatot.</i></small></p>
-        </div>
     </div>
-<div class="container seo-content">
-        <h2>Hitelkalauz: Mit kell tudni felvétel előtt?</h2>
 
-        <h3>Hogyan működik az Annuitásos Hitel?</h3>
-        <p>A magyarországi lakossági hitelek (lakáshitel, személyi kölcsön) többsége úgynevezett <strong>annuitásos törlesztésű</strong>. Ez azt jelenti, hogy a futamidő végéig (kamatperióduson belül) minden hónapban <strong>pontosan ugyanannyit fizetsz</strong>. Bár az összeg fix, a belső összetétele változik:</p>
-        <ul>
-            <li><strong>A futamidő elején:</strong> A törlesztőrészlet nagy része a <em>kamatot</em> fizeti, és csak kis része csökkenti a tőketartozást.</li>
-            <li><strong>A futamidő végén:</strong> Fordul a kocka, ilyenkor már alig fizetsz kamatot, és szinte a teljes összeg a tőkét törleszti.</li>
-        </ul>
-        <p>Ezért van az, hogy ha egy 20 éves hitelt 2 év után akarsz végtörleszteni, meglepően sok tőketartozásod van még hátra.</p>
-
-        <h3>Mi a különbség a Kamat és a THM között?</h3>
-        <p>Sokan összekeverik a két fogalmat, pedig a különbség döntő lehet:</p>
-        <ul>
-            <li><strong>Ügyleti Kamat:</strong> Ez az a százalék, amit a bank a pénz használatáért kér. Kalkulátorunk ezzel számol.</li>
-            <li><strong>THM (Teljes Hiteldíj Mutató):</strong> Ez a kamaton felül tartalmazza a kezelési költséget, értékbecslési díjat, számlavezetési díjat és egyéb kötelező járulékos elemeket. Hitel-összehasonlításnál mindig a THM-et kell nézni!</li>
-        </ul>
-
-        <h3>A hitelfelvétel aranyszabályai</h3>
-        <p>Szakértők szerint az ideális törlesztőrészlet nem haladja meg a havi nettó jövedelem 30-40%-át. Fontos, hogy rendelkezz legalább 3-6 havi "vésztartalékkal", ami fedezi a törlesztést akkor is, ha ideiglenesen kiesik a jövedelmed. Soha ne vegyél fel hitelt impulzív döntés alapján!</p>
+    <div id="content-en" class="container seo-content lang-content">
+        <h2>About Annuity Loans</h2>
+        <p>An annuity loan means you pay the same amount every month. In the beginning, you pay mostly interest; later, you pay mostly principal.</p>
     </div>
+    <div id="content-hu" class="container seo-content lang-content">
+        <h2>Az Annuitásos Hitelről</h2>
+        <p>Az annuitásos hitel azt jelenti, hogy minden hónapban ugyanannyit fizetsz. Az elején főleg kamatot törlesztesz, a végén pedig tőkét.</p>
+    </div>
+    <div id="content-de" class="container seo-content lang-content">
+        <h2>Über Annuitätendarlehen</h2>
+        <p>Ein Annuitätendarlehen bedeutet, dass Sie jeden Monat den gleichen Betrag zahlen. Anfangs zahlen Sie hauptsächlich Zinsen, später Tilgung.</p>
+    </div>
+    <div id="content-es" class="container seo-content lang-content">
+        <h2>Sobre Préstamos de Anualidad</h2>
+        <p>Un préstamo de anualidad significa que pagas la misma cantidad cada mes. Al principio pagas principalmente intereses; luego pagas capital.</p>
+    </div>
+
     <footer>
-        <p>&copy; 2025 Minden jog fenntartva. | <a href="index.html" style="color:#64748b; text-decoration:none;">Főoldal</a> | <a href="privacy.html" style="color:#64748b; text-decoration:none;">Adatvédelem</a></p>
-        <p style="font-size:0.8em;">Az oldalon található számítások tájékoztató jellegűek.</p>
+        <p>&copy; 2025 <span data-lang="footer_rights">All Rights Reserved.</span> | <a href="privacy.html" data-lang="nav_privacy">Privacy</a></p>
     </footer>
 
     <script>
         function calculateLoan() {
-            // 1. INPUT RETRIEVAL
             let amount = parseFloat(document.getElementById('loan-amount').value);
             let rate = parseFloat(document.getElementById('interest-rate').value); 
             let years = parseFloat(document.getElementById('loan-years').value);
 
-            // 2. VALIDATION
-            // Check if inputs are numbers and non-negative
-            if (isNaN(amount) || amount < 0) { amount = 0; }
-            if (isNaN(rate) || rate < 0) { rate = 0; }
+            if (isNaN(amount) || amount < 0) amount = 0;
+            if (isNaN(rate) || rate < 0) rate = 0;
+            if (isNaN(years) || years <= 0) return;
 
-            // Strict validation for Years: Must be a number AND greater than 0
-            if (isNaN(years) || years <= 0) {
-                alert("A futamidőnek nagyobbnak kell lennie, mint 0 év!");
-                return;
-            }
-
-            // 3. CALCULATION
-            let n = years * 12; // Total number of months
+            let n = years * 12;
             let monthlyPayment = 0;
             let totalPayment = 0;
             let totalInterest = 0;
 
-            // Updated Logic: Use <= to handle 0 and potential floating point edges safely
             if (rate <= 0) {
-                // SPECIAL CASE: 0% INTEREST
                 monthlyPayment = amount / n;
                 totalPayment = amount;
                 totalInterest = 0;
             } else {
-                // STANDARD CASE: ANNUITY FORMULA
-                let r = (rate / 100) / 12; // Monthly interest rate
+                let r = (rate / 100) / 12;
                 monthlyPayment = amount * ( (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1) );
                 totalPayment = monthlyPayment * n;
                 totalInterest = totalPayment - amount;
             }
 
-            // 4. DISPLAY RESULTS
-            let formatter = new Intl.NumberFormat('hu-HU', { style: 'currency', currency: 'HUF', maximumFractionDigits: 0 });
+            // Format based on language
+            const lang = localStorage.getItem('selectedLang') || 'en';
+            const t = translations[lang] || translations['en'];
+            
+            let formatter = new Intl.NumberFormat(lang === 'hu' ? 'hu-HU' : 'en-US', { 
+                style: 'currency', 
+                currency: lang === 'hu' ? 'HUF' : 'USD', 
+                maximumFractionDigits: 0 
+            });
 
             document.getElementById('loan-result').style.display = 'block';
             document.getElementById('loan-result').innerHTML = 
-                `<strong>Havi Törlesztőrészlet:</strong> <span style="font-size:1.5em; color:#fff">${formatter.format(monthlyPayment)}</span><br>` +
+                `<strong>${t.res_monthly_payment}</strong> <span style="font-size:1.5em; color:#fff">${formatter.format(monthlyPayment)}</span><br>` +
                 `<div style="font-size:0.9em; margin-top:10px; color:#cbd5e1;">` +
-                `Teljes visszafizetés: ${formatter.format(totalPayment)}<br>` +
-                `Ebből kamat: ${formatter.format(totalInterest)}` +
+                `${t.res_total_payment} ${formatter.format(totalPayment)}<br>` +
+                `${t.res_total_interest} ${formatter.format(totalInterest)}` +
                 `</div>`;
-                
-            // Trigger MathJax re-render
-            if (window.MathJax) { MathJax.typeset(); }
         }
     </script>
 </body>
