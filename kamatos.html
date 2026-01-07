@@ -27,6 +27,7 @@
 
     <div class="container">
         <h1>Kamatos Kamat Kalkulátor</h1>
+        <p style="text-align:center; color:#94a3b8;">Tervezze meg pénzügyi jövőjét profi eszközökkel!</p>
         
         <label>Kezdőtőke (Ft):</label>
         <input type="text" id="principal" placeholder="Pl. 1 000 000" oninput="formatNumberInput(this)">
@@ -93,10 +94,10 @@
                 <li>\(r\): Éves nominális kamatláb tizedesjegyként (pl. 0.07).</li>
                 <li>\(n\): Tőkésítés gyakorisága (havi = 12).</li>
                 <li>\(t\): Évek száma.</li>
-                <li>\(T_{type}\): Befizetés típusa. Értéke <strong>1</strong>, ha hónap elején fizetsz, és <strong>0</strong>, ha hónap végén.</li>
+                <li>\(T_{type}\): Befizetés típusa. Értéke <strong>1</strong>, ha hónap elején fizetsz (annuitásos kamatozás), és <strong>0</strong>, ha hónap végén.</li>
             </ul>
 
-            <p style="font-size:0.9em; margin-top:10px;"><i>Megjegyzés: Ha 0% a kamat, a rendszer automatikusan egyszerű összeadással számol (Kezdőtőke + Összes havi befizetés).</i></p>
+            <p style="font-size:0.9em; margin-top:10px;"><i>Megjegyzés: Amennyiben a befizetés a hónap elején történik, az annuitás rész további \((1+r/n)\) szorzót kap, hiszen az első befizetés is kamatozik az első hónapban.</i></p>
 
             <hr style="border-color: #334155; margin: 20px 0;">
 

@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hitelkalkulátor - Számold ki a Törlesztődet</title>
+    <title>Hitelkalkulátor - Számold ki a Törlesztődet Pontosan</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2023839620373581"
      crossorigin="anonymous"></script>
-    <meta name="description" content="Ingyenes online hitelkalkulátor. Számold ki a havi törlesztőrészletet a felvett összeg, a kamat és a futamidő alapján. Annuitásos hitel számítás.">
+    <meta name="description" content="Részletes hitelkalkulátor és útmutató. Tudja meg, hogyan számítják a bankok a törlesztőrészletet, mi a különbség a THM és a kamat között, és hogyan kerülje el az eladósodást.">
     <link rel="stylesheet" href="style.css">
     
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -39,66 +39,52 @@
         <button class="calc-btn" onclick="calculateLoan()">Törlesztő Kiszámolása</button>
 
         <div class="result" id="loan-result" style="display:none;"></div>
-
-        <div class="explanation-box">
-            <h3>Hogyan működik a számolás?</h3>
-            <p>Ez a kalkulátor az úgynevezett <strong>annuitásos módszert</strong> használja (egyenletes törlesztés). Ez a banki standard a lakás- és személyi hiteleknél.</p>
-            
-            <h4>Eredmény magyarázat:</h4>
-            <ul>
-                <li><strong>Havi Törlesztő:</strong> Ez az az összeg, amit minden hónapban fixen fizetned kell a futamidő végéig.</li>
-                <li><strong>Teljes Visszafizetés:</strong> A felvett tőke + az évek alatt kifizetett összes kamat.</li>
-            </ul>
-
-            <h4>A használt képletek:</h4>
-            
-            <p><strong>1. Normál eset (ha van kamat):</strong></p>
-            <p style="font-size: 1.1em; overflow-x: auto;">
-                \[
-                PMT = P \cdot \frac{r(1+r)^n}{(1+r)^n - 1}
-                \]
-            </p>
-
-            <p><strong>2. Speciális eset (ha 0% a kamat):</strong></p>
-            <p>Ha kamatmentes hitelt veszel fel (pl. családi kölcsön, támogatott hitelek), a képlet egyszerűsödik:</p>
-            <p style="font-size: 1.1em; overflow-x: auto;">
-                \[
-                PMT = \frac{P}{n}
-                \]
-            </p>
-            
-            <h4>Jelmagyarázat:</h4>
-            <ul>
-                <li>\(PMT\): Havi törlesztőrészlet.</li>
-                <li>\(P\): Felvett hitelösszeg (Principal).</li>
-                <li>\(r\): Havi kamatláb (Éves nominális kamat / 12).</li>
-                <li>\(n\): A futamidő hónapokban (Évek * 12).</li>
-            </ul>
-            
-            <p><small><i>Figyelem: Ez a számítás tájékoztató jellegű, és nem tartalmazza az esetleges egyéb banki költségeket (számlavezetés, biztosítás), azaz nem a THM-et mutatja, hanem az ügyleti kamatot.</i></small></p>
-        </div>
     </div>
+
     <div class="container seo-content">
-        <h2>Hitelkalauz: Mit kell tudni felvétel előtt?</h2>
+        <h2>Átfogó Útmutató a Hitel Törlesztéshez és Banki Számításokhoz</h2>
+        
+        <p>A hitelfelvétel az egyik legnagyobb pénzügyi döntés egy ember életében. Legyen szó lakáshitelről, személyi kölcsönről vagy autólízingről, a matematika mögötte ugyanaz. Ezzel a kalkulátorral és az alábbi útmutatóval segítünk átlátni a banki ajánlatokat.</p>
 
-        <h3>Hogyan működik az Annuitásos Hitel?</h3>
-        <p>A magyarországi lakossági hitelek (lakáshitel, személyi kölcsön) többsége úgynevezett <strong>annuitásos törlesztésű</strong>. Ez azt jelenti, hogy a futamidő végéig (kamatperióduson belül) minden hónapban <strong>pontosan ugyanannyit fizetsz!</strong> Bár az összeg fix, a belső összetétele változik:</p>
+        <h3>1. Az Annuitásos Hitel Csapdája és Előnye</h3>
+        <p>A legtöbb magyarországi lakossági hitel "annuitásos". Ez azt jelenti, hogy a bank úgy számolja ki a havi részletet, hogy az a futamidő végéig (vagy a kamatperiódus végéig) változatlan maradjon. Ez kiszámíthatóságot ad, de van egy fontos tulajdonsága:</p>
         <ul>
-            <li><strong>A futamidő elején:</strong> A törlesztőrészlet nagy része a <em>kamatot</em> fizeti, és csak kis része csökkenti a tőketartozást.</li>
-            <li><strong>A futamidő végén:</strong> Fordul a kocka, ilyenkor már alig fizetsz kamatot, és szinte a teljes összeg a tőkét törleszti.</li>
+            <li><strong>A futamidő elején:</strong> A befizetett összegnek akár 70-80%-a is lehet a <em>kamat</em>, és csak a maradék csökkenti a tényleges tartozást (tőketörlesztés).</li>
+            <li><strong>A futamidő végén:</strong> Ez megfordul, és szinte csak a tőkét fizeted vissza.</li>
         </ul>
-        <p>Ezért van az, hogy ha egy 20 éves hitelt 2 év után akarsz végtörleszteni, meglepően sok tőketartozásod van még hátra.</p>
+        <p>Ezért van az, hogy ha egy 20 éves hitelt 5 év után akarsz végtörleszteni, csalódottan látod majd, hogy a tartozásod alig csökkent, pedig "már 5 éve fizeted".</p>
 
-        <h3>Mi a különbség a Kamat és a THM között?</h3>
-        <p>Sokan összekeverik a két fogalmat, pedig a különbség döntő lehet:</p>
+        <h3>2. Kamat vs. THM: Mit kell nézni?</h3>
+        <p>A hirdetésekben gyakran nagy betűkkel szerepel a kamat, de apró betűvel a THM. Mi a különbség?</p>
         <ul>
-            <li><strong>Ügyleti Kamat:</strong> Ez az a százalék, amit a bank a pénz használatáért kér. Kalkulátorunk ezzel számol.</li>
-            <li><strong>THM (Teljes Hiteldíj Mutató):</strong> Ez a kamaton felül tartalmazza a kezelési költséget, értékbecslési díjat, számlavezetési díjat és egyéb kötelező járulékos elemeket. Hitel-összehasonlításnál mindig a THM-et kell nézni!</li>
+            <li><strong>Ügyleti Kamat:</strong> Ez a pénz használati díja. A kalkulátorunk ezt használja a matematikai törlesztő kiszámításához.</li>
+            <li><strong>THM (Teljes Hiteldíj Mutató):</strong> Ez a "valós" ár. Tartalmazza a kamatot, PLUSZ a kezelési költséget, folyósítási díjat, kötelező számlavezetés díját, értékbecslést, stb.</li>
+        </ul>
+        <p><strong>Szabály:</strong> Hitelek összehasonlításakor MINDIG a THM-et kell nézni, mert az tartalmazza a rejtett költségeket is.</p>
+
+        <h3>3. JTM: Mennyi hitelt kaphatok?</h3>
+        <p>A Magyar Nemzeti Bank (MNB) szabályozza, hogy a jövedelmed mekkora részét fordíthatod törlesztésre. Ezt hívják Jövedelemarányos Törlesztőrészlet Mutatónak (JTM).</p>
+        <p>Általánosságban (a szabályok változhatnak):</p>
+        <ul>
+            <li>Ha a nettó jövedelmed 600.000 Ft alatt van, a törlesztő nem lehet több a jövedelem 50%-ánál.</li>
+            <li>Ha felette van, akkor 60%-ig terhelhető.</li>
+        </ul>
+        <p>Azonban a pénzügyi biztonság érdekében javasolt, hogy a törlesztő ne haladja meg a családi bevétel <strong>30%-át</strong>.</p>
+
+        <h3>4. Változó vs. Fix Kamatozás</h3>
+        <p>A futamidő kiválasztása mellett a kamatperiódus a legfontosabb döntés:</p>
+        <ul>
+            <li><strong>Változó kamatozás (pl. 3 havonta változó):</strong> Kezdetben általában olcsóbb, de kockázatos. Ha a jegybanki alapkamat emelkedik, a törlesztőd drasztikusan megugorhat.</li>
+            <li><strong>Fix kamatozás (pl. 10 évre vagy végig fix):</strong> Kicsit drágább lehet induláskor, de biztonságot ad. Pontosan tudod, mennyit fizetsz 5 vagy 10 év múlva is, függetlenül a gazdasági válságoktól.</li>
         </ul>
 
-        <h3>A hitelfelvétel aranyszabályai</h3>
-        <p>Szakértők szerint az ideális törlesztőrészlet nem haladja meg a havi nettó jövedelem 30-40%-át. Fontos, hogy rendelkezz legalább 3-6 havi "vésztartalékkal", ami fedezi a törlesztést akkor is, ha ideiglenesen kiesik a jövedelmed. Soha ne vegyél fel hitelt impulzív döntés alapján!</p>
+        <h3>A kalkulátor képlete</h3>
+        <div class="formula">
+            \[ PMT = P \cdot \frac{r(1+r)^n}{(1+r)^n - 1} \]
+        </div>
+        <p>Ahol <em>PMT</em> a havi törlesztő, <em>P</em> a felvett hitel, <em>r</em> a havi kamatláb (éves/12), és <em>n</em> a hónapok száma.</p>
     </div>
+
     <footer>
         <p>&copy; 2025 Minden jog fenntartva. | <a href="index.html" style="color:#64748b; text-decoration:none;">Főoldal</a> | <a href="privacy.html" style="color:#64748b; text-decoration:none;">Adatvédelem</a></p>
         <p style="font-size:0.8em;">Az oldalon található számítások tájékoztató jellegűek.</p>
@@ -106,14 +92,9 @@
 
     <script>
         // --- 1. FORMATTER SCRIPT ---
-        // Ez intézi a szóközöket gépelés közben
         function formatNumberInput(input) {
-            // 1. Kiszedjük a nem szám karaktereket (kivéve ha tizedes pont lenne, de itt egész számokat várunk)
             let original = input.value.replace(/\D/g, ''); 
-            
-            // 2. Ha van érték, formázzuk
             if (original) {
-                // Regex: minden 3. számjegy után teszünk szóközt hátulról, ha nem az az utolsó
                 input.value = original.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
             } else {
                 input.value = "";
@@ -122,7 +103,6 @@
 
         function calculateLoan() {
             // --- 2. INPUT BEOLVASÁS (FONTOS: Szóközök törlése!) ---
-            // A .value-ból kiszedjük a " " karaktereket a replace segítségével
             let amountStr = document.getElementById('loan-amount').value.replace(/\s/g, '');
             let amount = parseFloat(amountStr);
             
